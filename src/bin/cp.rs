@@ -1,3 +1,8 @@
+use std::env;
+use cmdx::argparse::ArgumentParser;
+
 fn main() {
-    println!("cp");
+    let parser: ArgumentParser = Default::default();
+    let args = env::args().collect();
+    parser.parse(&args);
 }
