@@ -22,7 +22,7 @@ impl File {
 
         filename
             .rfind('.')
-            .map(|i| filename[i + 1..].to_ascii_lowercase())
+            .map(|idx| filename[idx + 1..].to_ascii_lowercase())
     }
 }
 
@@ -43,102 +43,40 @@ impl TryFrom<PathBuf> for File {
 }
 
 #[cfg(test)]
-mod test_filename {
+mod tests {
     use super::File;
     use std::path::Path;
 
     #[test]
-    fn dot() {
+    fn test_filename() {
         assert_eq!(".", File::filename(Path::new(".")));
-    }
-
-    #[test]
-    fn dotdot() {
         assert_eq!("..", File::filename(Path::new("..")));
-    }
-
-    #[test]
-    fn dotfile() {
-        assert_eq!(".zshrc", File::filename(Path::new(".zshrc")));
-    }
-
-    #[test]
-    fn root() {
         assert_eq!("/", File::filename(Path::new("/")));
-    }
-
-    #[test]
-    fn file() {
         assert_eq!("abcd", File::filename(Path::new("abcd")));
-    }
-
-    #[test]
-    fn with_extension() {
+        assert_eq!(".zshrc", File::filename(Path::new(".zshrc")));
         assert_eq!("abcd.efg", File::filename(Path::new("abcd.efg")));
-    }
-
-    #[test]
-    fn absolute() {
         assert_eq!("abcd.efg", File::filename(Path::new("/var/tmp/abcd.efg")));
-    }
-
-    #[test]
-    fn relative() {
         assert_eq!("abcd.efg", File::filename(Path::new("one/two/abcd.efg")));
     }
-}
-
-#[cfg(test)]
-mod test_extension {
-    use super::File;
-    use std::path::Path;
 
     #[test]
-    fn dot() {
+    fn test_extension() {
         assert_eq!(None, File::extension(Path::new(".")));
-    }
-
-    #[test]
-    fn dotdot() {
         assert_eq!(None, File::extension(Path::new("..")));
-    }
-
-    #[test]
-    fn dotfile() {
+        assert_eq!(None, File::extension(Path::new("/")));
+        assert_eq!(None, File::extension(Path::new("abcd")));
         assert_eq!(
             Some("zshrc".to_string()),
             File::extension(Path::new(".zshrc"))
         );
-    }
-
-    #[test]
-    fn root() {
-        assert_eq!(None, File::extension(Path::new("/")));
-    }
-
-    #[test]
-    fn none() {
-        assert_eq!(None, File::extension(Path::new("abcd")));
-    }
-
-    #[test]
-    fn some() {
         assert_eq!(
             Some("efg".to_string()),
             File::extension(Path::new("abcd.efg"))
         );
-    }
-
-    #[test]
-    fn absolute() {
         assert_eq!(
             Some("efg".to_string()),
             File::extension(Path::new("/var/tmp/abcd.efg"))
         );
-    }
-
-    #[test]
-    fn relative() {
         assert_eq!(
             Some("efg".to_string()),
             File::extension(Path::new("one/two/abcd.efg"))
