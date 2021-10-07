@@ -1,12 +1,15 @@
+use std::cmp::Ordering;
 use std::convert::TryFrom;
 use std::fs::{self, Metadata};
 use std::io;
 use std::path::{Path, PathBuf};
 
+#[derive(Debug)]
 pub struct File {
     pub name: String,
     pub extension: Option<String>,
     pub metadata: Metadata,
+    pub path: PathBuf,
 }
 
 impl File {
@@ -24,6 +27,10 @@ impl File {
             .rfind('.')
             .map(|idx| filename[idx + 1..].to_ascii_lowercase())
     }
+
+    pub fn is_dir(&self) -> bool {
+        self.metadata.is_dir()
+    }
 }
 
 impl TryFrom<PathBuf> for File {
@@ -38,9 +45,30 @@ impl TryFrom<PathBuf> for File {
             name,
             extension,
             metadata,
+            path,
         })
     }
 }
+
+impl Ord for File {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.name.cmp(&other.name)
+    }
+}
+
+impl PartialOrd for File {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for File {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+    }
+}
+
+impl Eq for File {}
 
 #[cfg(test)]
 mod tests {
