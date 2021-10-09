@@ -31,6 +31,10 @@ impl File {
     pub fn is_dir(&self) -> bool {
         self.metadata.is_dir()
     }
+
+    pub fn is_dotfile(&self) -> bool {
+        self.name.chars().nth(0) == Some('.')
+    }
 }
 
 impl TryFrom<PathBuf> for File {
