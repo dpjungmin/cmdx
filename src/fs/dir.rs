@@ -16,8 +16,7 @@ impl TryFrom<File> for Dir {
         let name = file.name.clone();
 
         let mut contents = fs::read_dir(file.path)?
-            .map(|res| res.map(|e| e.path()))
-            .map(|res| res.map(|p| File::try_from(p).unwrap()))
+            .map(|res| res.map(|e| File::try_from(e.path()).unwrap()))
             .collect::<Result<Vec<File>, io::Error>>()?;
 
         contents.sort();
