@@ -33,7 +33,7 @@ impl File {
     }
 
     pub fn is_dotfile(&self) -> bool {
-        self.name.chars().nth(0) == Some('.')
+        self.name.chars().next() == Some('.')
     }
 }
 
