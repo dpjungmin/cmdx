@@ -13,14 +13,11 @@ pub fn get_string_from_match(matches: &ArgMatches) -> String {
     };
 
     let mut output_str = strings.join(" ");
-    match matches.occurrences_of("n") {
-        0 => {
-            output_str.push('\n');
-        }
-        _ => {}
+    if matches.occurrences_of("n") == 0 {
+        output_str.push('\n');
     }
 
-    return output_str;
+    output_str
 }
 
 /// returns a clap App for echo
